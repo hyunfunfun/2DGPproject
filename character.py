@@ -154,7 +154,7 @@ class Boy:
         self.action = 3
         self.dir = 0
         self.face_dir = 1
-        self.image = load_image('animation_sheet.png')
+        self.image = load_image('C:\\qudgus\\TUK\\2Grade 2Semester\\2DGP\\2020184009\\2DGPproject\\resource\\character\\Hero1\\Hero1_idle')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
 
