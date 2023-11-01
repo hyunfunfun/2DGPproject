@@ -6,7 +6,7 @@ import game_framework
 
 def init():
     global image
-    image=load_image('title.png')
+    image=load_image('C:\\qudgus\\TUK\\2Grade 2Semester\\2DGP\\2020184009\\2DGPproject\\resource\\start\\title.png')
     pass
 
 def finish():

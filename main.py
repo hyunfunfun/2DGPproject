@@ -1,52 +1,9 @@
-from pico2d import *
-import game_world
-
-
-# Game object class here
-
-
-def handle_events():
-    global running
-
-    events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
-        else:
-            boy.handle_event(event)
-
-
-def reset_world():
-    global running
-    global grass
-    global team
-    global world
-    global boy
-
-    running = True
-    world = []
-
-
-
-def update_world():
-    game_world.update()
-
-
-def render_world():
-    clear_canvas()
-    game_world.render()
-    update_canvas()
+from pico2d import open_canvas, delay, close_canvas
+# import logo_mode as start_mode
+import title_mode as start_mode
+import game_framework
 
 
 open_canvas()
-reset_world()
-# game loop
-while running:
-    handle_events()
-    update_world()
-    render_world()
-    delay(0.01)
-# finalization code
+game_framework.run(start_mode)
 close_canvas()

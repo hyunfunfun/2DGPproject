@@ -8,7 +8,7 @@ def init():
     global logo_start_time
 
     running=True
-    image=load_image('tuk_credit.png')
+    image=load_image('C:\\qudgus\\TUK\\2Grade 2Semester\\2DGP\\2020184009\\2DGPproject\\resource\\start\\tuk_credit.png')
     logo_start_time=get_time()
     pass
 
