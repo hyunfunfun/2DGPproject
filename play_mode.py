@@ -4,6 +4,7 @@ import game_framework
 import game_world
 from grass import Grass
 from boy import Boy
+from Arrow import Arrow
 
 
 # Game object class here
@@ -26,6 +27,7 @@ def init():
     global grass
     global team
     global boy
+    global arrow
 
     running = True
 
@@ -34,6 +36,9 @@ def init():
 
     boy = Boy()
     game_world.add_object(boy, 1)
+
+    arrow = Arrow()
+    game_world.add_object(arrow,2)
 
 
 def finish():
