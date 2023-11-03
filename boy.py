@@ -72,7 +72,7 @@ class Attack:
 
     @staticmethod
     def enter(boy, e):
-        boy.frame=0
+        boy.frame = (boy.frame + 1) % 3
         boy.dir=1
 
     @staticmethod
@@ -82,12 +82,12 @@ class Attack:
 
     @staticmethod
     def do(boy):
-        boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+        # boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
         pass
 
     @staticmethod
     def draw(boy):
-        boy.attack_readyimage.clip_draw(int(boy.frame) * 70, 0, 50, 90, boy.x, boy.y)
+        boy.attack_readyimage.clip_draw(int(boy.frame) * 120, 0, 60, 90, boy.x, boy.y)
 
 class reteat:
 
