@@ -37,8 +37,8 @@ def init():
     boy = Boy()
     game_world.add_object(boy, 1)
 
-    arrow = Arrow()
-    game_world.add_object(arrow,2)
+    arrow = [Arrow(n) for n in range(4)]
+    game_world.add_objects(arrow,2)
 
 
 def finish():
