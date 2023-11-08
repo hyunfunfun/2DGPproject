@@ -89,7 +89,7 @@ class Attack:
     def draw(boy):
         boy.attack_readyimage.clip_draw(int(boy.frame) * 120, 0, 60, 90, boy.x, boy.y)
 
-class reteat:
+class Retreat:
 
     @staticmethod
     def enter(boy, e):
@@ -122,9 +122,9 @@ class StateMachine:
         self.boy = boy
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: Attack, left_down: Attack, up_down: Attack, down_down : Attack, space_down: reteat},
-            Attack: {right_down: Attack, left_down: Attack, up_down: Attack, down_down : Attack ,space_down: reteat},
-            reteat:{time_out:Idle}
+            Idle: {right_down: Attack, left_down: Attack, up_down: Attack, down_down : Attack, space_down: Retreat},
+            Attack: {right_down: Attack, left_down: Attack, up_down: Attack, down_down : Attack , space_down: Retreat},
+            Retreat:{time_out:Idle}
         }
 
     def start(self):
@@ -157,11 +157,11 @@ class Boy:
         self.action = 3
         self.face_dir = 1
         self.dir = 0
-        self.idleimage = load_image('C:\\qudgus\\TUK\\2Grade 2Semester\\2DGP\\2020184009\\2DGPproject\\resource\\character\\Hero1\\Hero1_idle.png')
-        self.attack_readyimage = load_image(
-            'C:\\qudgus\\TUK\\2Grade 2Semester\\2DGP\\2020184009\\2DGPproject\\resource\\character\\Hero1\\Hero1_attack_ready.png')
-        self.reteatimage = load_image(
-            'C:\\qudgus\\TUK\\2Grade 2Semester\\2DGP\\2020184009\\2DGPproject\\resource\\character\\Hero1\\Hero1_reteat.png')
+        self.idle_image = load_image('./resource\\character\\Hero1\\Hero1_idle.png')
+        self.attack_ready_image = load_image(
+            './resource\\character\\Hero1\\Hero1_attack_ready.png')
+        self.rerteat_image = load_image(
+            './resource\\character\\Hero1\\Hero1_reteat.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.item = None
