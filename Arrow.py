@@ -3,22 +3,6 @@ import random
 
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDLK_LEFT, SDLK_UP, SDLK_DOWN, SDLK_SPACE
 
-
-def right_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
-
-def left_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_LEFT
-
-def up_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_UP
-
-def down_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_DOWN
-def space_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
-
-
 class Arrow:
     def __init__(self,index):
         self.index=index
@@ -29,10 +13,13 @@ class Arrow:
             './resource\icon\\Arrow_left.png')
         self.rightimage = load_image(
             './resource\icon\\Arrow_right.png')
-        self.arrow_images=[self.upimage, self.downimage, self.rightimage, self.leftimage]
+        self.arrow_images = [self.upimage,self.downimage,self.leftimage,self.rightimage]
+        self.arrow_images=random.sample(self.arrow_images,4)
+
 
     def draw(self):
-        self.arrow_images[self.index].draw(self.index * 60 + 400, 30)
+        for arrow_image in self.arrow_images:
+            self.arrow_images[self.index].draw(self.index * 60 + 400, 30)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))

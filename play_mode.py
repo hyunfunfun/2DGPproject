@@ -3,8 +3,8 @@ import title_mode
 import game_framework
 import game_world
 from grass import Grass
-from boy import Boy
-from Arrow import Arrow
+from hero import Hero
+from arrow import Arrow
 
 
 # Game object class here
@@ -34,11 +34,8 @@ def init():
     grass = Grass()
     game_world.add_object(grass, 0)
 
-    boy = Boy()
+    boy = Hero()
     game_world.add_object(boy, 1)
-
-    arrow = [Arrow(n) for n in range(4)]
-    game_world.add_objects(arrow,2)
 
 
 def finish():
