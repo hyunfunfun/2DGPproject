@@ -201,8 +201,6 @@ class Hero:
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.item = None
-        self.arrow = [Arrow(n) for n in range(4)]
-        game_world.add_objects(self.arrow, 2)
 
     def update(self):
         self.state_machine.update()

@@ -1,4 +1,5 @@
 from pico2d import *
+import random
 import title_mode
 import game_framework
 import game_world
@@ -19,14 +20,14 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(title_mode)
         else:
-            boy.handle_event(event)
+            hero.handle_event(event)
 
 
 def init():
     global running
     global grass
     global team
-    global boy
+    global hero
     global arrow
 
     running = True
@@ -34,8 +35,11 @@ def init():
     grass = Grass()
     game_world.add_object(grass, 0)
 
-    boy = Hero()
-    game_world.add_object(boy, 1)
+    hero = Hero()
+    game_world.add_object(hero, 1)
+
+    arrow = [Arrow(n) for n in range(4)]
+    game_world.add_objects(arrow, 2)
 
 
 def finish():
@@ -53,9 +57,9 @@ def draw():
     update_canvas()
 
 def pause():
-    boy.wait_time = 100000000.0
+    hero.wait_time = 100000000.0
     pass
 
 def resume():
-    boy.wait_time = get_time()
+    hero.wait_time = get_time()
     pass
