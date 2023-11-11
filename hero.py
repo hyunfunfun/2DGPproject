@@ -44,11 +44,11 @@ FRAMES_PER_ACTION = 4
 
 FRAMES_PER_TIME = ACTION_PER_TIME * FRAMES_PER_ACTION
 
-TIME_PER_ACTION1 = 1
-ACTION_PER_TIME1 = 1.0 / TIME_PER_ACTION1
+TIME_PER_ATTACK = 1
+ATTACK_PER_TIME = 1.0 / TIME_PER_ATTACK
 FRAMES_PER_ACTION1 = 2
 
-FRAMES_PER_TIME1 = ACTION_PER_TIME1 * FRAMES_PER_ACTION1
+FRAMES_PER_ATTACK = ATTACK_PER_TIME * FRAMES_PER_ACTION1
 
 
 class Idle:
@@ -114,7 +114,10 @@ class Attack:
 
     @staticmethod
     def do(hero):
-        hero.frame=(hero.frame + FRAMES_PER_ACTION1 * ACTION_PER_TIME1 * game_framework.frame_time) % 2
+
+        hero.frame=(hero.frame + FRAMES_PER_ATTACK * ATTACK_PER_TIME * game_framework.frame_time) % 2
+        if hero.frame>1:
+            hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - hero.wait_time > 1:
             hero.state_machine.handle_event(('TIME_OUT', 0))
 
