@@ -26,6 +26,9 @@ def space_down(e):
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
+def attack(e):
+    return e[0] == 'Attack'
+
 # time_out = lambda e : e[0] == 'TIME_OUT'
 # Boy Run Speed
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
@@ -40,6 +43,12 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 4
 
 FRAMES_PER_TIME = ACTION_PER_TIME * FRAMES_PER_ACTION
+
+TIME_PER_ACTION1 = 1
+ACTION_PER_TIME1 = 1.0 / TIME_PER_ACTION1
+FRAMES_PER_ACTION1 = 2
+
+FRAMES_PER_TIME1 = ACTION_PER_TIME1 * FRAMES_PER_ACTION1
 
 
 class Idle:
@@ -65,32 +74,53 @@ class Idle:
 
 
 
-class Attack:
+class Attack_ready:
     @staticmethod
     def enter(hero, e):
-        if hero.attack_count>4:
-            hero.attack_count=0
+        hero.wait_time = get_time()
         hero.frame = (hero.frame + 1) % 3
+        hero.attack_count += 1
         hero.dir=1
 
     @staticmethod
     def exit(hero, e):
-        hero.attack_count+=1
         if space_down(e):
             pass
 
     @staticmethod
     def do(hero):
-        if(hero.attack_count>=3):
-            hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
-        pass
+        if hero.attack_count >= 4:
+            hero.attack_count = 0
+            hero.state_machine.handle_event(('Attack', 0))
+        if get_time() - hero.wait_time > 1:
+            hero.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(hero):
-        if hero.attack_count<3:
-            hero.attack_ready_image.clip_draw(int(hero.frame) * 120, 0, 60, 90, hero.x, hero.y)
-        else:
-            hero.attack_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y)
+        hero.attack_ready_image.clip_draw(int(hero.frame) * 120, 0, 60, 90, hero.x, hero.y)
+
+
+class Attack:
+    @staticmethod
+    def enter(hero, e):
+        hero.frame = 0
+        hero.wait_time = get_time()
+        hero.dir=1
+
+    @staticmethod
+    def exit(hero, e):
+        if space_down(e):
+            pass
+
+    @staticmethod
+    def do(hero):
+        hero.frame=(hero.frame + FRAMES_PER_ACTION1 * ACTION_PER_TIME1 * game_framework.frame_time) % 2
+        if get_time() - hero.wait_time > 1:
+            hero.state_machine.handle_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def draw(hero):
+        hero.attack_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y)
 
 class Retreat:
 
@@ -125,8 +155,9 @@ class StateMachine:
         self.hero = hero
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: Attack, left_down: Attack, up_down: Attack, down_down : Attack, space_down: Retreat},
-            Attack: {right_down: Attack, left_down: Attack, up_down: Attack, down_down : Attack , space_down: Retreat},
+            Idle: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready, space_down: Retreat},
+            Attack_ready: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready , space_down: Retreat, attack:Attack, time_out:Idle},
+            Attack:{time_out:Idle},
             Retreat:{time_out:Idle}
         }
 
@@ -150,23 +181,20 @@ class StateMachine:
         self.cur_state.draw(self.hero)
 
 
-
-
-
 class Hero:
     def __init__(self):
         self.x, self.y = 400, 90
         self.frame = 0
-        self.action = 3
-        self.face_dir = 1
         self.dir = 0
+        self.attack_count=0
+
         self.idle_image = load_image('./resource\\character\\Hero1\\Hero1_idle.png')
         self.attack_ready_image = load_image(
             './resource\\character\\Hero1\\Hero1_attack_ready.png')
         self.retreat_image = load_image(
             './resource\\character\\Hero1\\Hero1_retreat.png')
         self.attack_image=load_image('./resource\\character\\Hero1\\Hero1_attack.png')
-        self.attack_count=0
+
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.item = None
