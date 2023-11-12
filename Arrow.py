@@ -15,9 +15,6 @@ class Arrow:
         self.rightimage = load_image(
             './resource\icon\\Arrow_right.png')
 
-    def remove_arrow(self):
-        game_world.remove_object(self)
-
 
     def draw(self):
         if self.arrow_dir==0:

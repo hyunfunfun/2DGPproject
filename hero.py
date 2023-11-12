@@ -1,7 +1,8 @@
 # 이것은 각 상태들을 객체로 구현한 것임.
 import random
 
-from pico2d import get_time, load_image, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, clamp
+from pico2d import get_time, load_image, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, clamp, \
+    draw_rectangle
 from sdl2 import SDLK_UP, SDLK_DOWN
 from arrow import Arrow
 import game_world
@@ -260,3 +261,10 @@ class Hero:
 
     def draw(self):
         self.state_machine.draw()
+        draw_rectangle(*self.get_bb())  # 튜플을 풀어서 인자로 전달
+
+    def get_bb(self):
+        return self.x -30,self.y-50,self.x+30,self.y+30
+
+    def handle_collision(self,group,other):
+        pass

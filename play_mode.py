@@ -5,6 +5,7 @@ import game_framework
 import game_world
 from grass import Grass
 from hero import Hero
+from timer import Timer
 from arrow import Arrow
 
 
@@ -28,6 +29,7 @@ def init():
     global grass
     global team
     global hero
+    global timer
 
     running = True
 
@@ -36,6 +38,9 @@ def init():
 
     hero = Hero()
     game_world.add_object(hero, 1)
+
+    timer = Timer()
+    game_world.add_object(timer,2)
 
     hero.create_arrow()
 
