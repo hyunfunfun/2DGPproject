@@ -15,9 +15,6 @@ class Arrow:
         self.rightimage = load_image(
             './resource\icon\\Arrow_right.png')
 
-    def random_arrow(self):
-        random.shuffle(self.arrow_dir)
-
     def remove_arrow(self):
         game_world.remove_object(self)
 

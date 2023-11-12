@@ -28,7 +28,6 @@ def init():
     global grass
     global team
     global hero
-    global arrow
 
     running = True
 
@@ -37,6 +36,8 @@ def init():
 
     hero = Hero()
     game_world.add_object(hero, 1)
+
+    hero.create_arrow()
 
 
 def finish():

@@ -51,8 +51,6 @@ FRAMES_PER_ACTION1 = 2
 
 FRAMES_PER_ATTACK = ATTACK_PER_TIME * FRAMES_PER_ACTION1
 
-global arrow
-
 class Idle:
 
     @staticmethod
@@ -80,6 +78,7 @@ class Idle:
 class Attack_ready:
     @staticmethod
     def enter(hero, e):
+        hero.remove_arrow(hero.attack_count)
         hero.wait_time = get_time()
         hero.frame = (hero.frame + 1) % 3
         hero.attack_count += 1
@@ -160,7 +159,6 @@ class Retreat:
 
 class StateMachine:
     def __init__(self, hero):
-        hero.create_arrow()
         self.attack_count=0
         self.hero = hero
         self.cur_state = Idle
@@ -203,6 +201,8 @@ class StateMachine:
                     self.attack_count = 0
                     self.state_change(e, next_state)
                     return True
+                elif self.cur_state==Attack_ready and next_state==Idle:
+                    pass
                 else:
                     return False
             # if check_event(e):
@@ -222,12 +222,12 @@ class StateMachine:
 
 class Hero:
     def __init__(self):
+
         self.x, self.y = 400, 90
         self.frame = 0
         self.dir = 0
         self.attack_count=0
         self.arrow_dir=[n for n in range(4)]
-        random.shuffle(self.arrow_dir)
 
         self.idle_image = load_image('./resource\\character\\Hero1\\Hero1_idle.png')
         self.attack_ready_image = load_image(
@@ -241,9 +241,14 @@ class Hero:
         # self.item = None
 
     def create_arrow(self):
+        global arrow
+        random.shuffle(self.arrow_dir)
         arrow = [Arrow(n,self.arrow_dir[n]) for n in range(4)]
-
         game_world.add_objects(arrow, 2)
+
+    def remove_arrow(self,n):
+        game_world.remove_object(arrow[n])
+        pass
     def update(self):
         self.state_machine.update()
 
