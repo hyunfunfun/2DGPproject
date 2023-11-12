@@ -50,11 +50,13 @@ FRAMES_PER_ACTION1 = 2
 
 FRAMES_PER_ATTACK = ATTACK_PER_TIME * FRAMES_PER_ACTION1
 
+global arrow
 
 class Idle:
 
     @staticmethod
     def enter(hero, e):
+        hero.attack_count=0
         hero.dir = 0
         hero.frame = 0
         pass
@@ -103,18 +105,19 @@ class Attack_ready:
 class Attack:
     @staticmethod
     def enter(hero, e):
+        hero.attack_count = 0
         hero.frame = 0
         hero.wait_time = get_time()
         hero.dir=1
 
     @staticmethod
     def exit(hero, e):
+        hero.create_arrow()
         if space_down(e):
             pass
 
     @staticmethod
     def do(hero):
-
         hero.frame=(hero.frame + FRAMES_PER_ATTACK * ATTACK_PER_TIME * game_framework.frame_time) % 2
         if hero.frame>1:
             hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
@@ -129,6 +132,7 @@ class Retreat:
 
     @staticmethod
     def enter(hero, e):
+        hero.attack_count=0
         hero.frame=0
         hero.dir=-1
         hero.wait_time = get_time()  # pico2d import 필요
@@ -155,10 +159,12 @@ class Retreat:
 
 class StateMachine:
     def __init__(self, hero):
+        hero.create_arrow()
+        self.attack_count=0
         self.hero = hero
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready, space_down: Retreat},
+            Idle: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready,space_down: Retreat},
             Attack_ready: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready , space_down: Retreat, attack:Attack, time_out:Idle},
             Attack:{time_out:Idle},
             Retreat:{time_out:Idle}
@@ -173,12 +179,41 @@ class StateMachine:
     def handle_event(self, e):
         for check_event, next_state in self.transitions[self.cur_state].items():
             if check_event(e):
-                self.cur_state.exit(self.hero, e)
-                self.cur_state = next_state
-                self.cur_state.enter(self.hero, e)
-                return True
+                if next_state==Attack_ready and check_event==up_down and Arrow(self.attack_count).arrow_dir[self.attack_count]==0:
+                    self.attack_count += 1
+                    self.state_change(e, next_state)
+                    return True
+                elif next_state==Attack_ready and check_event==down_down and Arrow(self.attack_count).arrow_dir[self.attack_count]==1:
+                    self.attack_count += 1
+                    self.state_change(e, next_state)
+                    return True
+                elif next_state==Attack_ready and check_event==left_down and Arrow(self.attack_count).arrow_dir[self.attack_count]==2:
+                    self.attack_count += 1
+                    self.state_change(e, next_state)
+                    return True
+                elif next_state==Attack_ready and check_event==right_down and Arrow(self.attack_count).arrow_dir[self.attack_count]==3:
+                    self.attack_count += 1
+                    self.state_change(e, next_state)
+                    return True
+                elif next_state==Attack:
+                    self.state_change(e, next_state)
+                    self.attack_count = 0
+                elif next_state!=Attack_ready:
+                    self.attack_count = 0
+                    self.state_change(e, next_state)
+                    return True
+                else:
+                    return False
+            # if check_event(e):
+            #     self.state_change(e, next_state)
+            #     return True
 
         return False
+
+    def state_change(self, e, next_state):
+        self.cur_state.exit(self.hero, e)
+        self.cur_state = next_state
+        self.cur_state.enter(self.hero, e)
 
     def draw(self):
         self.cur_state.draw(self.hero)
@@ -200,8 +235,11 @@ class Hero:
 
         self.state_machine = StateMachine(self)
         self.state_machine.start()
-        self.item = None
+        # self.item = None
 
+    def create_arrow(self):
+        arrow = [Arrow(n) for n in range(4)]
+        game_world.add_objects(arrow, 2)
     def update(self):
         self.state_machine.update()
 

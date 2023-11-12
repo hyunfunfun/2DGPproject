@@ -38,9 +38,6 @@ def init():
     hero = Hero()
     game_world.add_object(hero, 1)
 
-    arrow = [Arrow(n) for n in range(4)]
-    game_world.add_objects(arrow, 2)
-
 
 def finish():
     game_world.clear()
@@ -57,9 +54,7 @@ def draw():
     update_canvas()
 
 def pause():
-    hero.wait_time = 100000000.0
     pass
 
 def resume():
-    hero.wait_time = get_time()
     pass
