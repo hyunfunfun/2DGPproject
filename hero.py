@@ -55,6 +55,10 @@ class Idle:
 
     @staticmethod
     def enter(hero, e):
+        if hero.attack_count>0:
+            for n in range(hero.attack_count, 4):
+                hero.remove_arrow(n)
+            hero.create_arrow()
         hero.attack_count=0
         hero.dir = 0
         hero.frame = 0
@@ -132,6 +136,10 @@ class Retreat:
 
     @staticmethod
     def enter(hero, e):
+        if hero.attack_count>0:
+            for n in range(hero.attack_count, 4):
+                hero.remove_arrow(n)
+            hero.create_arrow()
         hero.attack_count=0
         hero.frame=0
         hero.dir=-1
@@ -201,13 +209,8 @@ class StateMachine:
                     self.attack_count = 0
                     self.state_change(e, next_state)
                     return True
-                elif self.cur_state==Attack_ready and next_state==Idle:
-                    pass
                 else:
                     return False
-            # if check_event(e):
-            #     self.state_change(e, next_state)
-            #     return True
 
         return False
 
