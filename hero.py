@@ -1,4 +1,5 @@
 # 이것은 각 상태들을 객체로 구현한 것임.
+import random
 
 from pico2d import get_time, load_image, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, clamp
 from sdl2 import SDLK_UP, SDLK_DOWN
@@ -179,19 +180,19 @@ class StateMachine:
     def handle_event(self, e):
         for check_event, next_state in self.transitions[self.cur_state].items():
             if check_event(e):
-                if next_state==Attack_ready and check_event==up_down and Arrow(self.attack_count).arrow_dir[self.attack_count]==0:
+                if next_state==Attack_ready and check_event==up_down and self.hero.arrow_dir[self.attack_count]==0:
                     self.attack_count += 1
                     self.state_change(e, next_state)
                     return True
-                elif next_state==Attack_ready and check_event==down_down and Arrow(self.attack_count).arrow_dir[self.attack_count]==1:
+                elif next_state==Attack_ready and check_event==down_down and self.hero.arrow_dir[self.attack_count]==1:
                     self.attack_count += 1
                     self.state_change(e, next_state)
                     return True
-                elif next_state==Attack_ready and check_event==left_down and Arrow(self.attack_count).arrow_dir[self.attack_count]==2:
+                elif next_state==Attack_ready and check_event==left_down and self.hero.arrow_dir[self.attack_count]==2:
                     self.attack_count += 1
                     self.state_change(e, next_state)
                     return True
-                elif next_state==Attack_ready and check_event==right_down and Arrow(self.attack_count).arrow_dir[self.attack_count]==3:
+                elif next_state==Attack_ready and check_event==right_down and self.hero.arrow_dir[self.attack_count]==3:
                     self.attack_count += 1
                     self.state_change(e, next_state)
                     return True
@@ -225,6 +226,8 @@ class Hero:
         self.frame = 0
         self.dir = 0
         self.attack_count=0
+        self.arrow_dir=[n for n in range(4)]
+        random.shuffle(self.arrow_dir)
 
         self.idle_image = load_image('./resource\\character\\Hero1\\Hero1_idle.png')
         self.attack_ready_image = load_image(
@@ -238,7 +241,8 @@ class Hero:
         # self.item = None
 
     def create_arrow(self):
-        arrow = [Arrow(n) for n in range(4)]
+        arrow = [Arrow(n,self.arrow_dir[n]) for n in range(4)]
+
         game_world.add_objects(arrow, 2)
     def update(self):
         self.state_machine.update()
