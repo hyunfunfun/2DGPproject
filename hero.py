@@ -76,7 +76,7 @@ class Idle:
 
     @staticmethod
     def draw(hero):
-        hero.idle_image.clip_draw(int(hero.frame) * 120, 0, 60, 80, hero.x, hero.y)
+        hero.idle_image.clip_draw(int(hero.frame) * 120, 0, 60, 80, hero.x, hero.y,200,200)
 
 
 
@@ -104,7 +104,7 @@ class Attack_ready:
 
     @staticmethod
     def draw(hero):
-        hero.attack_ready_image.clip_draw(int(hero.frame) * 120, 0, 60, 90, hero.x, hero.y)
+        hero.attack_ready_image.clip_draw(int(hero.frame) * 120, 0, 60, 90, hero.x, hero.y,200,200)
 
 
 class Attack:
@@ -131,7 +131,7 @@ class Attack:
 
     @staticmethod
     def draw(hero):
-        hero.attack_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y)
+        hero.attack_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y,200,200)
 
 class Retreat:
 
@@ -163,7 +163,7 @@ class Retreat:
 
     @staticmethod
     def draw(hero):
-        hero.retreat_image.clip_draw(int(hero.frame) * 70, 0, 50, 90, hero.x, hero.y)
+        hero.retreat_image.clip_draw(int(hero.frame) * 65, 0, 50, 90, hero.x, hero.y,200,200)
 
 
 class StateMachine:
@@ -227,7 +227,7 @@ class StateMachine:
 class Hero:
     def __init__(self):
 
-        self.x, self.y = 400, 90
+        self.x, self.y = 400, 150
         self.frame = 0
         self.dir = 0
         self.attack_count=0
@@ -264,7 +264,7 @@ class Hero:
         draw_rectangle(*self.get_bb())  # 튜플을 풀어서 인자로 전달
 
     def get_bb(self):
-        return self.x -30,self.y-50,self.x+30,self.y+30
+        return self.x -80,self.y-100,self.x+80,self.y+50
 
     def handle_collision(self,group,other):
         pass
