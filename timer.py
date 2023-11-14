@@ -21,7 +21,7 @@ class Timer:
     def __init__(self):
         self.sec_frame = 0
         self.ten_frame= 0
-        self.x=350
+        self.x=500
         self.y=550
 
         self.timer_image = load_image('./resource\icon\\number1.png')

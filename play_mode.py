@@ -6,6 +6,7 @@ import game_world
 from grass import Grass
 from hero import Hero
 from timer import Timer
+from background import Background
 from arrow import Arrow
 
 
@@ -26,15 +27,19 @@ def handle_events():
 
 def init():
     global running
-    global grass
+    global background
+    # global grass
     global team
     global hero
     global timer
 
     running = True
 
-    grass = Grass()
-    game_world.add_object(grass, 0)
+    # grass = Grass()
+    # game_world.add_object(grass, 0)
+
+    background = [Background(n) for n in range(2)]
+    game_world.add_objects(background, 0)
 
     hero = Hero()
     game_world.add_object(hero, 1)

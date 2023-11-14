@@ -76,7 +76,7 @@ class Idle:
 
     @staticmethod
     def draw(hero):
-        hero.idle_image.clip_draw(int(hero.frame) * 120, 0, 60, 80, hero.x, hero.y,200,200)
+        hero.idle_image.clip_draw(int(hero.frame) * 120, 0, 60, 80, hero.x, hero.y,150,150)
 
 
 
@@ -104,7 +104,7 @@ class Attack_ready:
 
     @staticmethod
     def draw(hero):
-        hero.attack_ready_image.clip_draw(int(hero.frame) * 120, 0, 60, 90, hero.x, hero.y,200,200)
+        hero.attack_ready_image.clip_draw(int(hero.frame) * 120, 0, 60, 90, hero.x, hero.y,150,150)
 
 
 class Attack:
@@ -131,7 +131,7 @@ class Attack:
 
     @staticmethod
     def draw(hero):
-        hero.attack_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y,200,200)
+        hero.attack_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y,150,150)
 
 class Retreat:
 
@@ -163,7 +163,7 @@ class Retreat:
 
     @staticmethod
     def draw(hero):
-        hero.retreat_image.clip_draw(int(hero.frame) * 65, 0, 50, 90, hero.x, hero.y,200,200)
+        hero.retreat_image.clip_draw(int(hero.frame) * 65, 0, 50, 90, hero.x, hero.y,150,150)
 
 
 class StateMachine:
