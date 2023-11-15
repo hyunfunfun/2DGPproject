@@ -31,6 +31,9 @@ def time_out(e):
 def attack(e):
     return e[0] == 'Attack'
 
+def die(e):
+    return e[0] == 'Die'
+
 # time_out = lambda e : e[0] == 'TIME_OUT'
 # Boy Run Speed
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
@@ -157,7 +160,10 @@ class Retreat:
         hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         hero.x = clamp(25, hero.x, 1600 - 25)
-        if get_time() - hero.wait_time > 0.5:
+        if hero.x <= 100:
+            hero.attack_count = 0
+            hero.state_machine.handle_event(('Die', 0))
+        elif get_time() - hero.wait_time > 0.5:
             hero.state_machine.handle_event(('TIME_OUT', 0))
         pass
 
@@ -179,14 +185,14 @@ class Die:
     @staticmethod
     def do(hero):
         hero.frame=(hero.frame + FRAMES_PER_ATTACK * ATTACK_PER_TIME * game_framework.frame_time) % 3
-        if hero.frame>1:
-            hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
-        if get_time() - hero.wait_time > 1:
+        # if hero.frame>1:
+        #     hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if get_time() - hero.wait_time > 2:
             hero.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(hero):
-        hero.die_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y,130,100)
+        hero.die_image.clip_draw(int(hero.frame) * 65, 0, 65, 90, hero.x, hero.y,100,100)
 
 
 
@@ -199,7 +205,8 @@ class StateMachine:
             Idle: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready,space_down: Retreat},
             Attack_ready: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready , space_down: Retreat, attack:Attack, time_out:Idle},
             Attack:{time_out:Idle},
-            Retreat:{time_out:Idle}
+            Retreat:{time_out:Idle, die:Die},
+            Die:{time_out:Idle}
         }
 
     def start(self):

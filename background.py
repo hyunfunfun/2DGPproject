@@ -15,16 +15,6 @@ class Background:
 
     def draw(self):
         self.stage_dic[self.index].draw(450, 250)
-        draw_rectangle(*self.get_bb_left())
-        draw_rectangle(*self.get_bb_right())
 
     def update(self):
-        pass
-
-    def get_bb_left(self):
-        return self.leftline_x -30,self.leftline_y-60,self.leftline_x+30,self.leftline_y+200
-
-    def get_bb_right(self):
-        return self.rightline_x - 30, self.rightline_y - 60, self.rightline_x + 30, self.rightline_y + 200
-    def handle_collision(self,group,other):
         pass
