@@ -21,14 +21,14 @@ class Timer:
     def __init__(self):
         self.sec_frame = 0
         self.ten_frame= 0
-        self.x=450
+        self.x=470
         self.y=450
 
         self.timer_image = load_image('./resource\icon\\number1.png')
 
     def draw(self):
-        self.timer_image.clip_draw(int(self.sec_frame) * 17, 0, 18, 18, self.x, self.y)
-        self.timer_image.clip_draw(int(self.ten_frame) * 17, 0, 18, 18, self.x-20, self.y)
+        self.timer_image.clip_draw(int(self.sec_frame) * 17, 0, 18, 18, self.x, self.y,70,70)
+        self.timer_image.clip_draw(int(self.ten_frame) * 17, 0, 18, 18, self.x-60, self.y,70,70)
 
 
     def handle_event(self, event):

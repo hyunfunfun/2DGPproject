@@ -28,19 +28,13 @@ def handle_events():
 def init():
     global running
     global background
-    # global grass
     global team
     global hero
     global timer
 
     running = True
 
-    # grass = Grass()
-    # game_world.add_object(grass, 0)
-
-    # background = [Background(n) for n in range(2)]
-    # game_world.add_objects(background, 0)
-    background=Background()
+    background=Background(4)
     game_world.add_object(background, 0)
 
     hero = Hero()
