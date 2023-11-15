@@ -76,7 +76,7 @@ class Idle:
 
     @staticmethod
     def draw(hero):
-        hero.idle_image.clip_draw(int(hero.frame) * 120, 0, 60, 80, hero.x, hero.y,150,150)
+        hero.idle_image.clip_draw(int(hero.frame) * 120, 0, 60, 80, hero.x, hero.y,100,100)
 
 
 
@@ -104,7 +104,7 @@ class Attack_ready:
 
     @staticmethod
     def draw(hero):
-        hero.attack_ready_image.clip_draw(int(hero.frame) * 120, 0, 60, 90, hero.x, hero.y,150,150)
+        hero.attack_ready_image.clip_draw(int(hero.frame) * 120, 0, 60, 90, hero.x, hero.y,100,100)
 
 
 class Attack:
@@ -112,7 +112,7 @@ class Attack:
     def enter(hero, e):
         hero.attack_count = 0
         hero.frame = 0
-        hero.wait_time = get_time()
+        # hero.wait_time = get_time()
         hero.dir=1
 
     @staticmethod
@@ -131,7 +131,7 @@ class Attack:
 
     @staticmethod
     def draw(hero):
-        hero.attack_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y,150,150)
+        hero.attack_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y,130,100)
 
 class Retreat:
 
@@ -163,7 +163,31 @@ class Retreat:
 
     @staticmethod
     def draw(hero):
-        hero.retreat_image.clip_draw(int(hero.frame) * 65, 0, 50, 90, hero.x, hero.y,150,150)
+        hero.retreat_image.clip_draw(int(hero.frame) * 65, 0, 50, 90, hero.x, hero.y,100,100)
+
+class Die:
+    @staticmethod
+    def enter(hero, e):
+        hero.frame = 0
+        hero.dir=-1
+
+    @staticmethod
+    def exit(hero, e):
+        if space_down(e):
+            pass
+
+    @staticmethod
+    def do(hero):
+        hero.frame=(hero.frame + FRAMES_PER_ATTACK * ATTACK_PER_TIME * game_framework.frame_time) % 3
+        if hero.frame>1:
+            hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if get_time() - hero.wait_time > 1:
+            hero.state_machine.handle_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def draw(hero):
+        hero.die_image.clip_draw(int(hero.frame) * 120, 0, 100, 90, hero.x, hero.y,130,100)
+
 
 
 class StateMachine:
@@ -239,7 +263,7 @@ class Hero:
         self.retreat_image = load_image(
             './resource\\character\\Hero1\\Hero1_retreat.png')
         self.attack_image=load_image('./resource\\character\\Hero1\\Hero1_attack.png')
-
+        self.die_image=load_image('./resource\\character\\Hero1\\Hero1_die.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         # self.item = None
@@ -264,7 +288,7 @@ class Hero:
         draw_rectangle(*self.get_bb())  # 튜플을 풀어서 인자로 전달
 
     def get_bb(self):
-        return self.x -80,self.y-100,self.x+80,self.y+50
+        return self.x -50,self.y-60,self.x+50,self.y+50
 
     def handle_collision(self,group,other):
         pass

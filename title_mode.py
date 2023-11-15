@@ -6,7 +6,7 @@ import game_framework
 
 def init():
     global image
-    image=load_image('C:\\qudgus\\TUK\\2Grade 2Semester\\2DGP\\2020184009\\2DGPproject\\resource\\start\\title.png')
+    image=load_image('./resource\\start\\title1.png')
     pass
 
 def finish():
@@ -17,7 +17,7 @@ def update():
 
 def draw():
     clear_canvas()
-    image.draw(400,300)
+    image.draw(450,300)
     update_canvas()
     pass
 

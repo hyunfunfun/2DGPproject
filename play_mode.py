@@ -38,8 +38,10 @@ def init():
     # grass = Grass()
     # game_world.add_object(grass, 0)
 
-    background = [Background(n) for n in range(2)]
-    game_world.add_objects(background, 0)
+    # background = [Background(n) for n in range(2)]
+    # game_world.add_objects(background, 0)
+    background=Background()
+    game_world.add_object(background, 0)
 
     hero = Hero()
     game_world.add_object(hero, 1)
