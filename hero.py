@@ -55,6 +55,12 @@ FRAMES_PER_ACTION1 = 2
 
 FRAMES_PER_ATTACK = ATTACK_PER_TIME * FRAMES_PER_ACTION1
 
+TIME_PER_DIE = 1.5
+DIE_PER_TIME = 1.0 / TIME_PER_DIE
+FRAMES_PER_DIE = 3
+
+FRAMES_PER_DIE = DIE_PER_TIME * FRAMES_PER_DIE
+
 class Idle:
 
     @staticmethod
@@ -184,7 +190,7 @@ class Die:
 
     @staticmethod
     def do(hero):
-        hero.frame=(hero.frame + FRAMES_PER_ATTACK * ATTACK_PER_TIME * game_framework.frame_time) % 3
+        hero.frame=(hero.frame + FRAMES_PER_DIE * DIE_PER_TIME * game_framework.frame_time) % 3
         # if hero.frame>1:
         #     hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - hero.wait_time > 2:
