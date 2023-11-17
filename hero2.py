@@ -261,7 +261,7 @@ class StateMachine:
         self.cur_state.draw(self.hero)
 
 
-class Hero:
+class Hero2:
     def __init__(self):
 
         self.x, self.y = 400, 150
@@ -270,13 +270,13 @@ class Hero:
         self.attack_count=0
         self.arrow_dir=[n for n in range(4)]
 
-        self.idle_image = load_image('./resource\\character\\Hero1\\Hero1_idle.png')
+        self.idle_image = load_image('./resource\\character\\Hero2\\Hero2_idle.png')
         self.attack_ready_image = load_image(
-            './resource\\character\\Hero1\\Hero1_attack_ready.png')
+            './resource\\character\\Hero2\\Hero2_attack_ready.png')
         self.retreat_image = load_image(
-            './resource\\character\\Hero1\\Hero1_retreat.png')
-        self.attack_image=load_image('./resource\\character\\Hero1\\Hero1_attack.png')
-        self.die_image=load_image('./resource\\character\\Hero1\\Hero1_die.png')
+            './resource\\character\\Hero2\\Hero2_retreat.png')
+        self.attack_image=load_image('./resource\\character\\Hero2\\Hero2_attack.png')
+        self.die_image=load_image('./resource\\character\\Hero2\\Hero2_die.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         # self.item = None

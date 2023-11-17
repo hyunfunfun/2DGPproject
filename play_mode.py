@@ -4,7 +4,11 @@ import title_mode
 import game_framework
 import game_world
 from grass import Grass
-from hero import Hero
+from hero1 import Hero1
+from hero2 import Hero2
+from hero3 import Hero3
+from hero4 import Hero4
+
 from timer import Timer
 from background import Background
 from arrow import Arrow
@@ -37,13 +41,25 @@ def init():
     background=Background(4)
     game_world.add_object(background, 0)
 
-    hero = Hero()
-    game_world.add_object(hero, 1)
+    # create_hero()
 
     timer = Timer()
     game_world.add_object(timer,2)
 
     hero.create_arrow()
+
+
+def create_hero(n):
+    global hero
+    if n==1:
+        hero = Hero1()
+    elif n==2:
+        hero = Hero2()
+    elif n==3:
+        hero = Hero3()
+    elif n==4:
+        hero = Hero4()
+    game_world.add_object(hero, 1)
 
 
 def finish():
