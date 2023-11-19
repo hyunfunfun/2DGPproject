@@ -9,6 +9,8 @@ from hero2 import Hero2
 from hero3 import Hero3
 from hero4 import Hero4
 
+from enemy1 import Enemy1
+
 from timer import Timer
 from background import Background
 from arrow import Arrow
@@ -33,8 +35,8 @@ def init():
     global running
     global background
     global team
-    global hero
     global timer
+    global enemy
 
     running = True
 
@@ -45,6 +47,9 @@ def init():
 
     timer = Timer()
     game_world.add_object(timer,2)
+
+    enemy=Enemy1()
+    game_world.add_object(enemy,1)
 
     hero.create_arrow()
 

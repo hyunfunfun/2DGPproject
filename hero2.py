@@ -165,7 +165,6 @@ class Retreat:
     def do(hero):
         hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
-        hero.x = clamp(25, hero.x, 1600 - 25)
         if hero.x <= 100:
             hero.attack_count = 0
             hero.state_machine.handle_event(('Die', 0))
@@ -264,7 +263,7 @@ class StateMachine:
 class Hero2:
     def __init__(self):
 
-        self.x, self.y = 400, 150
+        self.x, self.y = 200, 150
         self.frame = 0
         self.dir = 0
         self.attack_count=0
