@@ -292,6 +292,7 @@ class Hero1:
     def remove_arrow(self,n):
         game_world.remove_object(arrow[n])
         pass
+
     def update(self):
         self.state_machine.update()
 
@@ -310,4 +311,7 @@ class Hero1:
         return self.x -40,self.y-60,self.x+30,self.y+50
 
     def handle_collision(self,group,other):
-        pass
+        if group == 'enemy:hero':
+            self.state_machine.cur_state=Die
+        if group == 'hero:enemy':
+            pass

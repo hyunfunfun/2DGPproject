@@ -53,6 +53,9 @@ def init():
 
     hero.create_arrow()
 
+    game_world.add_collision_pairs('hero:enemy', None, enemy)
+    game_world.add_collision_pairs('enemy:hero',enemy,None)
+
 
 def create_hero(n):
     global hero
@@ -65,6 +68,8 @@ def create_hero(n):
     elif n==4:
         hero = Hero4()
     game_world.add_object(hero, 1)
+    game_world.add_collision_pairs('hero:enemy', hero, None)
+    game_world.add_collision_pairs('enemy:hero', None, hero)
 
 
 def finish():
@@ -74,6 +79,7 @@ def finish():
 
 def update():
     game_world.update()
+    game_world.handle_collisions()
 
 
 def draw():

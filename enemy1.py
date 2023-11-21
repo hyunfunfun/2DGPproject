@@ -146,7 +146,7 @@ class Retreat:
 
     @staticmethod
     def draw(enemy):
-        enemy.retreat_image.clip_composite_draw(int(enemy.frame) * 65, 0, 50, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.retreat_image.clip_composite_draw(int(enemy.frame) * 65, 0, 70, 90,0,'h', enemy.x, enemy.y, 100, 100)
 
 class Die:
     @staticmethod
@@ -192,7 +192,6 @@ class StateMachine:
     def handle_event(self, e):
         for check_event, next_state in self.transitions[self.cur_state].items():
             if check_event(e):
-                print(check_event)
                 self.cur_state.exit(self.enemy, e)
                 self.cur_state = next_state
                 self.cur_state.enter(self.enemy, e)
@@ -239,4 +238,7 @@ class Enemy1:
         return self.x - 40, self.y - 60, self.x + 30, self.y + 50
 
     def handle_collision(self, group, other):
-        pass
+        if group == 'enemy:hero':
+            pass
+        if group == 'hero:enemy':
+            self.state_machine.cur_state = Die

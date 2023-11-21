@@ -30,11 +30,19 @@ def render():
         for o in layer:
             o.draw()
 
+def remove_collision_object(o):
+    for pairs in collision_pairs.values():
+        if o in pairs[0]:
+            pairs[0].remove(o)
+        if o in pairs[1]:
+            pairs[1].remove(o)
 
 def remove_object(o):
     for layer in objects:
         if o in layer:
             layer.remove(o)
+            remove_collision_object(o)
+            del o
             return
     raise ValueError('Cannot delete non existing object')
 
@@ -44,8 +52,8 @@ def clear():
         layer.clear()
 
 
-def collide(a,b):
-    left_a, bottom_a, right_a, top_a = a.get_bb()
+def collide_1(a,b):
+    left_a, bottom_a, right_a, top_a = a.attack_bb()
     left_b, bottom_b, right_b, top_b = b.get_bb()
 
     if (left_a>right_b):return False
@@ -59,6 +67,6 @@ def handle_collisions():
     for group, pairs in collision_pairs.items():
         for a in pairs[0]:
             for b in pairs[1]:
-                if collide(a,b):
+                if collide_1(a,b):
                     a.handle_collision(group,b)
                     b.handle_collision(group,a)
