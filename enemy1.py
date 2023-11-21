@@ -53,6 +53,7 @@ class Idle:
     @staticmethod
     def enter(enemy, e):
         enemy.wait_time = get_time()
+        enemy.attack_range=40
         enemy.attack_count=0
         enemy.dir = 0
         enemy.frame = 0
@@ -98,6 +99,7 @@ class Attack_ready:
 class Attack:
     @staticmethod
     def enter(enemy, e):
+        enemy.attack_range=70
         enemy.wait_time = get_time()
         enemy.frame = 0
         enemy.dir=-1
@@ -116,7 +118,7 @@ class Attack:
 
     @staticmethod
     def draw(enemy):
-        enemy.attack_image.clip_composite_draw(int(enemy.frame) * 120, 0, 100, 90,0,'h', enemy.x, enemy.y, 130, 100)
+        enemy.attack_image.clip_composite_draw(int(enemy.frame) * 120, 0, 120, 120,0,'h', enemy.x, enemy.y, 150, 130)
 
 class Retreat:
 
@@ -135,7 +137,7 @@ class Retreat:
     def do(enemy):
         enemy.frame = (enemy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         enemy.x -= enemy.dir * RUN_SPEED_PPS * game_framework.frame_time
-        if enemy.x >= 700:
+        if enemy.x >= 800:
             enemy.attack_count = 0
             enemy.state_machine.handle_event(('Die', 0))
         if get_time() - enemy.wait_time > 0.5:
@@ -207,6 +209,7 @@ class Enemy1:
         self.x, self.y = 700, 150
         self.frame = 0
         self.dir = 0
+        self.attack_range=40
 
         self.idle_image = load_image('./resource\\character\\enemy1\\enemy1_idle.png')
         self.attack_ready_image = load_image(
@@ -226,10 +229,14 @@ class Enemy1:
 
     def draw(self):
         self.state_machine.draw()
+        draw_rectangle(*self.attack_bb())  # 튜플을 풀어서 인자로 전달
         draw_rectangle(*self.get_bb())  # 튜플을 풀어서 인자로 전달
 
+    def attack_bb(self):
+        return self.x-self.attack_range,self.y-20,self.x+0,self.y+0
+
     def get_bb(self):
-        return self.x - 50, self.y - 60, self.x + 50, self.y + 50
+        return self.x - 40, self.y - 60, self.x + 30, self.y + 50
 
     def handle_collision(self, group, other):
         pass

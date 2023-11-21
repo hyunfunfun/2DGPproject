@@ -65,6 +65,7 @@ class Idle:
 
     @staticmethod
     def enter(hero, e):
+        hero.attack_range = 30
         if hero.attack_count>0:
             for n in range(hero.attack_count, 4):
                 hero.remove_arrow(n)
@@ -119,6 +120,7 @@ class Attack_ready:
 class Attack:
     @staticmethod
     def enter(hero, e):
+        hero.attack_range=60
         hero.attack_count = 0
         hero.frame = 0
         # hero.wait_time = get_time()
@@ -268,6 +270,7 @@ class Hero4:
         self.dir = 0
         self.attack_count=0
         self.arrow_dir=[n for n in range(4)]
+        self.attack_range=30
 
         self.idle_image = load_image('./resource\\character\\Hero4\\Hero4_idle.png')
         self.attack_ready_image = load_image(
@@ -297,10 +300,14 @@ class Hero4:
 
     def draw(self):
         self.state_machine.draw()
+        draw_rectangle(*self.attack_bb())  # 튜플을 풀어서 인자로 전달
         draw_rectangle(*self.get_bb())  # 튜플을 풀어서 인자로 전달
 
+    def attack_bb(self):
+        return self.x-0,self.y-20,self.x+self.attack_range,self.y+0
+
     def get_bb(self):
-        return self.x -50,self.y-60,self.x+50,self.y+50
+        return self.x -40,self.y-60,self.x+30,self.y+50
 
     def handle_collision(self,group,other):
         pass
