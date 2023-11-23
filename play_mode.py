@@ -3,7 +3,6 @@ import random
 import title_mode
 import game_framework
 import game_world
-from grass import Grass
 from hero1 import Hero1
 from hero2 import Hero2
 from hero3 import Hero3

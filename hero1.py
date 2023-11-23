@@ -65,7 +65,7 @@ class Idle:
 
     @staticmethod
     def enter(hero, e):
-        hero.attack_range = 30
+        hero.attack_range = -100
         if hero.attack_count>0:
             for n in range(hero.attack_count, 4):
                 hero.remove_arrow(n)
@@ -82,7 +82,10 @@ class Idle:
 
     @staticmethod
     def do(hero):
-        hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
+        if hero.lose:
+            hero.state_machine.handle_event(('Die', 0))
+        else:
+            hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
 
     @staticmethod
     def draw(hero):
@@ -120,10 +123,10 @@ class Attack_ready:
 class Attack:
     @staticmethod
     def enter(hero, e):
-        hero.attack_range = 60
+        hero.attack_range = 70
         hero.attack_count = 0
         hero.frame = 0
-        # hero.wait_time = get_time()
+        hero.wait_time = get_time()
         hero.dir=1
 
     @staticmethod
@@ -183,9 +186,11 @@ class Die:
     def enter(hero, e):
         hero.frame = 0
         hero.dir=-1
+        hero.wait_time = get_time()
 
     @staticmethod
     def exit(hero, e):
+        hero.lose=False
         if space_down(e):
             pass
 
@@ -209,7 +214,7 @@ class StateMachine:
         self.hero = hero
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready,space_down: Retreat},
+            Idle: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready,space_down: Retreat, die:Die},
             Attack_ready: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready , space_down: Retreat, attack:Attack, time_out:Idle},
             Attack:{time_out:Idle},
             Retreat:{time_out:Idle, die:Die},
@@ -270,7 +275,9 @@ class Hero1:
         self.dir = 0
         self.attack_count=0
         self.arrow_dir=[n for n in range(4)]
-        self.attack_range = 30
+        self.attack_range = -100
+        self.lose=False
+        self.victory=False
 
         self.idle_image = load_image('./resource\\character\\Hero1\\Hero1_idle.png')
         self.attack_ready_image = load_image(
@@ -305,13 +312,14 @@ class Hero1:
         draw_rectangle(*self.get_bb())  # 튜플을 풀어서 인자로 전달
 
     def attack_bb(self):
-        return self.x-0,self.y-20,self.x+self.attack_range,self.y+0
+        return self.x-40,self.y-20,self.x+self.attack_range,self.y+0
 
     def get_bb(self):
         return self.x -40,self.y-60,self.x+30,self.y+50
 
     def handle_collision(self,group,other):
         if group == 'enemy:hero':
-            self.state_machine.cur_state=Die
+            self.lose=True
         if group == 'hero:enemy':
+            self.victory=True
             pass

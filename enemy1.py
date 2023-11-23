@@ -24,7 +24,7 @@ def die(e):
 
 # zombie Run Speed
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
-RUN_SPEED_KMPH = 20.0 # Km / Hour
+RUN_SPEED_KMPH = 25.0 # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -53,10 +53,10 @@ class Idle:
     @staticmethod
     def enter(enemy, e):
         enemy.wait_time = get_time()
-        enemy.attack_range=40
-        enemy.attack_count=0
+        enemy.attack_range=-100
         enemy.dir = 0
         enemy.frame = 0
+        enemy.next_behavior=random.randint(0,5)
         pass
 
     @staticmethod
@@ -65,9 +65,12 @@ class Idle:
 
     @staticmethod
     def do(enemy):
-        if (enemy.x-play_mode.hero.x)<150:
-            enemy.state_machine.handle_event(('Retreat', 0))
-        if get_time() - enemy.wait_time > 2:
+        if (enemy.x-play_mode.hero.x)<130:
+            if enemy.next_behavior>1:
+                enemy.state_machine.handle_event(('Retreat', 0))
+            else :
+                enemy.next_behavior=random.randint(0,5)
+        if get_time() - enemy.wait_time > 3:
             enemy.state_machine.handle_event(('TIME_OUT', 0))
         enemy.frame = (enemy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
 
@@ -99,13 +102,14 @@ class Attack_ready:
 class Attack:
     @staticmethod
     def enter(enemy, e):
-        enemy.attack_range=70
+        enemy.attack_range=80
         enemy.wait_time = get_time()
         enemy.frame = 0
         enemy.dir=-1
 
     @staticmethod
     def exit(enemy, e):
+        enemy.next_behavior = random.randint(0, 1)
         pass
 
     @staticmethod
@@ -138,7 +142,6 @@ class Retreat:
         enemy.frame = (enemy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         enemy.x -= enemy.dir * RUN_SPEED_PPS * game_framework.frame_time
         if enemy.x >= 800:
-            enemy.attack_count = 0
             enemy.state_machine.handle_event(('Die', 0))
         if get_time() - enemy.wait_time > 0.5:
             enemy.state_machine.handle_event(('TIME_OUT', 0))
@@ -163,7 +166,7 @@ class Die:
         enemy.frame= (enemy.frame + FRAMES_PER_DIE * DIE_PER_TIME * game_framework.frame_time) % 3
         # if hero.frame>1:
         #     hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
-        if get_time() - enemy.wait_time > 2:
+        if get_time() - enemy.wait_time > 2.5:
             enemy.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
@@ -192,12 +195,15 @@ class StateMachine:
     def handle_event(self, e):
         for check_event, next_state in self.transitions[self.cur_state].items():
             if check_event(e):
-                self.cur_state.exit(self.enemy, e)
-                self.cur_state = next_state
-                self.cur_state.enter(self.enemy, e)
+                self.state_change(e, next_state)
                 return True
             else:
                 continue
+
+    def state_change(self, e, next_state):
+        self.cur_state.exit(self.enemy, e)
+        self.cur_state = next_state
+        self.cur_state.enter(self.enemy, e)
 
     def draw(self):
         self.cur_state.draw(self.enemy)
@@ -208,7 +214,8 @@ class Enemy1:
         self.x, self.y = 700, 150
         self.frame = 0
         self.dir = 0
-        self.attack_range=40
+        self.attack_range=-100
+        self.next_behavior=0
 
         self.idle_image = load_image('./resource\\character\\enemy1\\enemy1_idle.png')
         self.attack_ready_image = load_image(
@@ -232,7 +239,7 @@ class Enemy1:
         draw_rectangle(*self.get_bb())  # 튜플을 풀어서 인자로 전달
 
     def attack_bb(self):
-        return self.x-self.attack_range,self.y-20,self.x+0,self.y+0
+        return self.x-self.attack_range,self.y-20,self.x+30,self.y+0
 
     def get_bb(self):
         return self.x - 40, self.y - 60, self.x + 30, self.y + 50
@@ -241,4 +248,5 @@ class Enemy1:
         if group == 'enemy:hero':
             pass
         if group == 'hero:enemy':
-            self.state_machine.cur_state = Die
+            play_mode.enemy
+            self.state_machine.state_change('Die',Die)
