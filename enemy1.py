@@ -24,7 +24,7 @@ def die(e):
 
 # zombie Run Speed
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
-RUN_SPEED_KMPH = 25.0 # Km / Hour
+RUN_SPEED_KMPH = 20.0 # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -53,10 +53,9 @@ class Idle:
     @staticmethod
     def enter(enemy, e):
         enemy.wait_time = get_time()
-        enemy.attack_range=-100
         enemy.dir = 0
         enemy.frame = 0
-        enemy.next_behavior=random.randint(0,5)
+        enemy.next_behavior=random.randint(0,4)
         pass
 
     @staticmethod
@@ -65,11 +64,13 @@ class Idle:
 
     @staticmethod
     def do(enemy):
+        if enemy.lose:
+            enemy.state_machine.handle_event(('Die', 0))
         if (enemy.x-play_mode.hero.x)<130:
             if enemy.next_behavior>1:
                 enemy.state_machine.handle_event(('Retreat', 0))
             else :
-                enemy.next_behavior=random.randint(0,5)
+                enemy.next_behavior=random.randint(0,4)
         if get_time() - enemy.wait_time > 3:
             enemy.state_machine.handle_event(('TIME_OUT', 0))
         enemy.frame = (enemy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
@@ -91,7 +92,9 @@ class Attack_ready:
 
     @staticmethod
     def do(enemy):
-        if get_time() - enemy.wait_time > 1:
+        if enemy.lose:
+            enemy.state_machine.handle_event(('Die', 0))
+        if get_time() - enemy.wait_time > 0.5:
             enemy.state_machine.handle_event(('TIME_OUT', 0))
         enemy.frame = (enemy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
 
@@ -109,12 +112,15 @@ class Attack:
 
     @staticmethod
     def exit(enemy, e):
-        enemy.next_behavior = random.randint(0, 1)
+        enemy.attack_range = -100
+        enemy.next_behavior = random.randint(0, 4)
         pass
 
     @staticmethod
     def do(enemy):
         enemy.frame= (enemy.frame + FRAMES_PER_ATTACK * ATTACK_PER_TIME * game_framework.frame_time) % 2
+        if enemy.lose:
+            enemy.state_machine.handle_event(('Die', 0))
         if enemy.frame>1:
             enemy.x += enemy.dir * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - enemy.wait_time > 1:
@@ -141,7 +147,11 @@ class Retreat:
     def do(enemy):
         enemy.frame = (enemy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         enemy.x -= enemy.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if enemy.lose:
+            enemy.state_machine.handle_event(('Die', 0))
         if enemy.x >= 800:
+            play_mode.hero.victory = True
+            enemy.lose=True
             enemy.state_machine.handle_event(('Die', 0))
         if get_time() - enemy.wait_time > 0.5:
             enemy.state_machine.handle_event(('TIME_OUT', 0))
@@ -159,7 +169,8 @@ class Die:
 
     @staticmethod
     def exit(enemy, e):
-        pass
+        play_mode.hero.victory = False
+        enemy.lose = False
 
     @staticmethod
     def do(enemy):
@@ -179,9 +190,9 @@ class StateMachine:
         self.enemy = enemy
         self.cur_state = Idle
         self.transitions = {
-            Idle: {retreat : Retreat, time_out : Attack_ready},
-            Attack_ready: {time_out : Attack,retreat: Retreat},
-            Attack:{time_out:Idle},
+            Idle: {retreat : Retreat, time_out : Attack_ready, die:Die},
+            Attack_ready: {time_out : Attack,retreat: Retreat,die:Die},
+            Attack:{time_out:Idle,die:Die},
             Retreat:{time_out:Idle, die:Die},
             Die:{time_out:Idle}
         }
@@ -216,6 +227,9 @@ class Enemy1:
         self.dir = 0
         self.attack_range=-100
         self.next_behavior=0
+        self.lose = False
+        self.victory = False
+        self.victory_count=0
 
         self.idle_image = load_image('./resource\\character\\enemy1\\enemy1_idle.png')
         self.attack_ready_image = load_image(
@@ -246,7 +260,8 @@ class Enemy1:
 
     def handle_collision(self, group, other):
         if group == 'enemy:hero':
-            pass
+            self.victory=True
+            play_mode.score.enemy_score += 1
         if group == 'hero:enemy':
-            play_mode.enemy
-            self.state_machine.state_change('Die',Die)
+            self.lose=True
+            game_world.remove_collision_object(self)

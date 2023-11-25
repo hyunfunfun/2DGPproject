@@ -7,6 +7,7 @@ from sdl2 import SDLK_UP, SDLK_DOWN
 from arrow import Arrow
 import game_world
 import game_framework
+import play_mode
 
 # state event check
 # ( state event type, event value )
@@ -65,7 +66,6 @@ class Idle:
 
     @staticmethod
     def enter(hero, e):
-        hero.attack_range = -100
         if hero.attack_count>0:
             for n in range(hero.attack_count, 4):
                 hero.remove_arrow(n)
@@ -109,6 +109,8 @@ class Attack_ready:
 
     @staticmethod
     def do(hero):
+        if hero.lose:
+            hero.state_machine.handle_event(('Die', 0))
         if hero.attack_count >= 4:
             hero.attack_count = 0
             hero.state_machine.handle_event(('Attack', 0))
@@ -131,6 +133,7 @@ class Attack:
 
     @staticmethod
     def exit(hero, e):
+        hero.attack_range = -100
         hero.create_arrow()
         if space_down(e):
             pass
@@ -138,6 +141,8 @@ class Attack:
     @staticmethod
     def do(hero):
         hero.frame=(hero.frame + FRAMES_PER_ATTACK * ATTACK_PER_TIME * game_framework.frame_time) % 2
+        if hero.lose:
+            hero.state_machine.handle_event(('Die', 0))
         if hero.frame>1:
             hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - hero.wait_time > 1:
@@ -170,7 +175,11 @@ class Retreat:
     def do(hero):
         hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         hero.x += hero.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if hero.lose:
+            hero.state_machine.handle_event(('Die', 0))
         if hero.x <= 100:
+            play_mode.enemy.victory = True
+            hero.lose=True
             hero.attack_count = 0
             hero.state_machine.handle_event(('Die', 0))
         elif get_time() - hero.wait_time > 0.5:
@@ -190,6 +199,7 @@ class Die:
 
     @staticmethod
     def exit(hero, e):
+        play_mode.enemy.victory = False
         hero.lose=False
         if space_down(e):
             pass
@@ -215,8 +225,8 @@ class StateMachine:
         self.cur_state = Idle
         self.transitions = {
             Idle: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready,space_down: Retreat, die:Die},
-            Attack_ready: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready , space_down: Retreat, attack:Attack, time_out:Idle},
-            Attack:{time_out:Idle},
+            Attack_ready: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready , space_down: Retreat, attack:Attack, time_out:Idle,die:Die},
+            Attack:{time_out:Idle, die:Die},
             Retreat:{time_out:Idle, die:Die},
             Die:{time_out:Idle}
         }
@@ -320,6 +330,7 @@ class Hero1:
     def handle_collision(self,group,other):
         if group == 'enemy:hero':
             self.lose=True
+            game_world.remove_collision_object(self)
         if group == 'hero:enemy':
             self.victory=True
-            pass
+            play_mode.score.hero_score+=1

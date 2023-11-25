@@ -63,6 +63,8 @@ def collide_1(a,b):
 
     return True
 
+
+
 def handle_collisions():
     for group, pairs in collision_pairs.items():
         for a in pairs[0]:

@@ -10,6 +10,7 @@ from hero4 import Hero4
 
 from enemy1 import Enemy1
 
+from score import Score
 from timer import Timer
 from background import Background
 from arrow import Arrow
@@ -36,6 +37,7 @@ def init():
     global team
     global timer
     global enemy
+    global score
 
     running = True
 
@@ -43,6 +45,9 @@ def init():
     game_world.add_object(background, 0)
 
     # create_hero()
+
+    score=Score()
+    game_world.add_object(score, 2)
 
     timer = Timer()
     game_world.add_object(timer,2)
