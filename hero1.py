@@ -178,7 +178,6 @@ class Retreat:
         if hero.lose:
             hero.state_machine.handle_event(('Die', 0))
         if hero.x <= 100:
-            play_mode.enemy.victory = True
             hero.lose=True
             hero.attack_count = 0
             hero.state_machine.handle_event(('Die', 0))
@@ -193,13 +192,18 @@ class Retreat:
 class Die:
     @staticmethod
     def enter(hero, e):
+        play_mode.score.enemy_score += 1
+        game_world.remove_collision_object(hero)
         hero.frame = 0
         hero.dir=-1
         hero.wait_time = get_time()
 
     @staticmethod
     def exit(hero, e):
-        play_mode.enemy.victory = False
+        game_world.add_collision_pairs('hero:enemy', hero, None)
+        game_world.add_collision_pairs('enemy:hero', None, hero)
+        hero.x, hero.y = 200, 150
+        play_mode.enemy.x, play_mode.enemy.y = 700, 150
         hero.lose=False
         if space_down(e):
             pass
@@ -287,7 +291,6 @@ class Hero1:
         self.arrow_dir=[n for n in range(4)]
         self.attack_range = -100
         self.lose=False
-        self.victory=False
 
         self.idle_image = load_image('./resource\\character\\Hero1\\Hero1_idle.png')
         self.attack_ready_image = load_image(
@@ -332,5 +335,4 @@ class Hero1:
             self.lose=True
             game_world.remove_collision_object(self)
         if group == 'hero:enemy':
-            self.victory=True
-            play_mode.score.hero_score+=1
+            pass
