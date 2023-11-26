@@ -2,7 +2,7 @@
 import random
 
 from pico2d import get_time, load_image, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, clamp, \
-    draw_rectangle
+    draw_rectangle, SDLK_LSHIFT
 from sdl2 import SDLK_UP, SDLK_DOWN
 from arrow import Arrow
 import game_world
@@ -26,6 +26,9 @@ def down_down(e):
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
+def lshift_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_LSHIFT
+
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
@@ -34,6 +37,7 @@ def attack(e):
 
 def die(e):
     return e[0] == 'Die'
+
 
 # time_out = lambda e : e[0] == 'TIME_OUT'
 # Boy Run Speed
@@ -189,6 +193,41 @@ class Retreat:
     def draw(hero):
         hero.retreat_image.clip_draw(int(hero.frame) * 65, 0, 50, 90, hero.x, hero.y,100,100)
 
+class Defense:
+    @staticmethod
+    def enter(hero, e):
+        if hero.attack_count>0:
+            for n in range(hero.attack_count, 4):
+                hero.remove_arrow(n)
+            hero.create_arrow()
+        hero.attack_count=0
+        hero.frame=0
+        hero.dir=-1
+        hero.wait_time = get_time()  # pico2d import 필요
+        hero.defense_per=random.randint(0,5)
+        pass
+
+    @staticmethod
+    def exit(hero, e):
+        if space_down(e):
+            pass
+
+    @staticmethod
+    def do(hero):
+        if hero.defense_per>0:
+            if (play_mode.enemy.x - hero.x)<130:
+                play_mode.enemy.x = hero.x+130
+        if hero.lose:
+            hero.state_machine.handle_event(('Die', 0))
+        elif get_time() - hero.wait_time > 1:
+            hero.state_machine.handle_event(('TIME_OUT', 0))
+        pass
+
+    @staticmethod
+    def draw(hero):
+        hero.defense_image.clip_draw(0, 0, 60, 90, hero.x, hero.y,100,100)
+
+
 class Die:
     @staticmethod
     def enter(hero, e):
@@ -228,9 +267,10 @@ class StateMachine:
         self.hero = hero
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready,space_down: Retreat, die:Die},
-            Attack_ready: {right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready , space_down: Retreat, attack:Attack, time_out:Idle,die:Die},
+            Idle: {lshift_down:Defense,right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready,space_down: Retreat, die:Die},
+            Attack_ready: {lshift_down:Defense,right_down: Attack_ready, left_down: Attack_ready, up_down: Attack_ready, down_down : Attack_ready , space_down: Retreat, attack:Attack, time_out:Idle,die:Die},
             Attack:{time_out:Idle, die:Die},
+            Defense:{time_out:Idle, die:Die},
             Retreat:{time_out:Idle, die:Die},
             Die:{time_out:Idle}
         }
@@ -291,6 +331,7 @@ class Hero1:
         self.arrow_dir=[n for n in range(4)]
         self.attack_range = -100
         self.lose=False
+        self.defense_per=0
 
         self.idle_image = load_image('./resource\\character\\Hero1\\Hero1_idle.png')
         self.attack_ready_image = load_image(
@@ -299,8 +340,11 @@ class Hero1:
             './resource\\character\\Hero1\\Hero1_retreat.png')
         self.attack_image=load_image('./resource\\character\\Hero1\\Hero1_attack.png')
         self.die_image=load_image('./resource\\character\\Hero1\\Hero1_die.png')
+        self.defense_image=load_image('./resource\\character\\Hero1\\Hero1_defense.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
+
+
         # self.item = None
 
     def create_arrow(self):

@@ -22,6 +22,9 @@ def attack_ready(e):
 def die(e):
     return e[0] == 'Die'
 
+def defense(e):
+    return e[0] == 'Defense'
+
 # zombie Run Speed
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
 RUN_SPEED_KMPH = 20.0 # Km / Hour
@@ -52,6 +55,7 @@ class Idle:
 
     @staticmethod
     def enter(enemy, e):
+        enemy.defense_range_per=random.randint(0,5)
         enemy.wait_time = get_time()
         enemy.dir = 0
         enemy.frame = 0
@@ -67,7 +71,9 @@ class Idle:
         if enemy.lose:
             enemy.state_machine.handle_event(('Die', 0))
         if (enemy.x-play_mode.hero.x)<130:
-            if enemy.next_behavior>1:
+            if enemy.defense_range_per>3:
+                enemy.state_machine.handle_event(('Defense', 0))
+            elif enemy.next_behavior>1:
                 enemy.state_machine.handle_event(('Retreat', 0))
             else :
                 enemy.next_behavior=random.randint(0,4)
@@ -92,6 +98,13 @@ class Attack_ready:
 
     @staticmethod
     def do(enemy):
+        if (enemy.x-play_mode.hero.x)<130:
+            if enemy.defense_range_per>3:
+                enemy.state_machine.handle_event(('Defense', 0))
+            elif enemy.next_behavior>1:
+                enemy.state_machine.handle_event(('Retreat', 0))
+            else :
+                enemy.next_behavior=random.randint(0,4)
         if enemy.lose:
             enemy.state_machine.handle_event(('Die', 0))
         if get_time() - enemy.wait_time > 0.5:
@@ -160,6 +173,36 @@ class Retreat:
     def draw(enemy):
         enemy.retreat_image.clip_composite_draw(int(enemy.frame) * 65, 0, 70, 90,0,'h', enemy.x, enemy.y, 100, 100)
 
+
+class Defense:
+    @staticmethod
+    def enter(enemy, e):
+        enemy.frame=0
+        enemy.dir=-1
+        enemy.wait_time = get_time()  # pico2d import 필요
+        enemy.defense_per=random.randint(0, 5)
+        pass
+
+    @staticmethod
+    def exit(enemy, e):
+        pass
+
+    @staticmethod
+    def do(enemy):
+        if enemy.defense_per>0:
+            if (enemy.x - play_mode.hero.x)<130:
+                play_mode.hero.x = enemy.x - 130
+        if enemy.lose:
+            enemy.state_machine.handle_event(('Die', 0))
+        elif get_time() - enemy.wait_time > 1:
+            enemy.state_machine.handle_event(('TIME_OUT', 0))
+        pass
+
+    @staticmethod
+    def draw(enemy):
+        enemy.defense_image.clip_composite_draw(0, 0, 60, 90,0,'h', enemy.x, enemy.y, 100, 100)
+
+
 class Die:
     @staticmethod
     def enter(enemy, e):
@@ -194,9 +237,10 @@ class StateMachine:
         self.enemy = enemy
         self.cur_state = Idle
         self.transitions = {
-            Idle: {retreat : Retreat, time_out : Attack_ready, die:Die},
-            Attack_ready: {time_out : Attack,retreat: Retreat,die:Die},
+            Idle: {retreat : Retreat, time_out : Attack_ready, die:Die, defense:Defense},
+            Attack_ready: {time_out : Attack,retreat: Retreat,die:Die, defense:Defense},
             Attack:{time_out:Idle,die:Die},
+            Defense:{time_out:Idle,die:Die},
             Retreat:{time_out:Idle, die:Die},
             Die:{time_out:Idle}
         }
@@ -233,11 +277,15 @@ class Enemy1:
         self.next_behavior=0
         self.lose = False
 
+        self.defense_range_per=0
+        self.defense_per=0
+
         self.idle_image = load_image('./resource\\character\\enemy1\\enemy1_idle.png')
         self.attack_ready_image = load_image(
             './resource\\character\\enemy1\\enemy1_attack_ready.png')
         self.retreat_image = load_image(
             './resource\\character\\enemy1\\enemy1_retreat.png')
+        self.defense_image = load_image('./resource\\character\\enemy1\\enemy1_defense.png')
         self.attack_image = load_image('./resource\\character\\enemy1\\enemy1_attack.png')
         self.die_image = load_image('./resource\\character\\enemy1\\enemy1_die.png')
         self.state_machine = StateMachine(self)
