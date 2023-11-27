@@ -189,7 +189,7 @@ class Defense:
 
     @staticmethod
     def do(enemy):
-        if enemy.defense_per>0:
+        if enemy.defense_per>1:
             if (enemy.x - play_mode.hero.x)<130:
                 play_mode.hero.x = enemy.x - 130
         if enemy.lose:
