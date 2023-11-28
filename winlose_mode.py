@@ -27,6 +27,8 @@ def finish():
         game_world.remove_object(lose)
     game_world.remove_object(play_mode.timer)
     game_world.remove_object(play_mode.enemy)
+    for n in range(play_mode.hero.attack_count, 4):
+        play_mode.hero.remove_arrow(n)
     pass
 
 def update():

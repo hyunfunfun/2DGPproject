@@ -27,6 +27,7 @@ def init():
     global timer
     global enemy
     global score
+    global arrow
 
     running = True
 
