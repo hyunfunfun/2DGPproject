@@ -1,6 +1,7 @@
 from pico2d import *
 import random
 import title_mode
+import winlose_mode
 import game_framework
 import game_world
 from hero1 import Hero1
@@ -17,18 +18,6 @@ from arrow import Arrow
 
 
 # Game object class here
-
-
-def handle_events():
-
-    events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.change_mode(title_mode)
-        else:
-            hero.handle_event(event)
 
 
 def init():
@@ -61,6 +50,18 @@ def init():
     game_world.add_collision_pairs('enemy:hero',enemy,None)
 
 
+def handle_events():
+
+    events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            game_framework.change_mode(title_mode)
+        else:
+            hero.handle_event(event)
+
+
 def create_hero(n):
     global hero
     if n==1:
@@ -75,7 +76,6 @@ def create_hero(n):
     game_world.add_collision_pairs('hero:enemy', hero, None)
     game_world.add_collision_pairs('enemy:hero', None, hero)
 
-
 def finish():
     game_world.clear()
     pass
@@ -84,6 +84,9 @@ def finish():
 def update():
     game_world.update()
     game_world.handle_collisions()
+    if timer.ten_frame >= 1:
+        print('time_out')
+        game_framework.push_mode(winlose_mode)
 
 
 def draw():
