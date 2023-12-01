@@ -162,7 +162,7 @@ class Retreat:
         enemy.x -= enemy.dir * RUN_SPEED_PPS * game_framework.frame_time
         if enemy.lose:
             enemy.state_machine.handle_event(('Die', 0))
-        if enemy.x >= 800:
+        if enemy.x >= 900:
             enemy.lose=True
             enemy.state_machine.handle_event(('Die', 0))
         if get_time() - enemy.wait_time > 0.5:
@@ -215,7 +215,7 @@ class Die:
     def exit(enemy, e):
         game_world.add_collision_pairs('enemy:hero', enemy, None)
         game_world.add_collision_pairs('hero:enemy', None, enemy)
-        enemy.x, enemy.y = 700, 150
+        enemy.x, enemy.y = 800, 150
         play_mode.hero.x, play_mode.hero.y = 200, 150
         enemy.lose = False
 
@@ -271,7 +271,7 @@ class Enemy3:
 
     def __init__(self):
         self.size = 120
-        self.x, self.y = 700, 150
+        self.x, self.y = 800, 150
         self.frame = 0
         self.dir = 0
         self.attack_range=-100

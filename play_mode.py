@@ -101,7 +101,7 @@ def finish():
 def update():
     game_world.update()
     game_world.handle_collisions()
-    if timer.ten_frame >= 2:
+    if timer.ten_frame >= 1:
         print('time_out')
         game_framework.push_mode(winlose_mode)
 

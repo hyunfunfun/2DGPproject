@@ -14,7 +14,7 @@ class Background:
         self.stage_dic={0:self.stage1, 1:self.stage2, 2:self.stage3, 3:self.stage4, 4:self.stage_Boss}
 
     def draw(self):
-        self.stage_dic[self.index].draw(450, 250)
+        self.stage_dic[self.index].draw(500, 250)
 
     def update(self):
         pass

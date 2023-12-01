@@ -257,7 +257,7 @@ class Die:
 
     @staticmethod
     def draw(hero):
-        hero.die_image.clip_draw(int(hero.frame) * 65, 0, 65, 90, hero.x, hero.y,100,100)
+        hero.die_image.clip_draw(int(hero.frame) * 65, 0, 80, 90, hero.x, hero.y,100,100)
 
 
 
@@ -323,7 +323,7 @@ class StateMachine:
 
 class Hero1:
     def __init__(self):
-        self.win_count=4
+        self.win_count=0
         self.x, self.y = 200, 150
         self.frame = 0
         self.dir = 0

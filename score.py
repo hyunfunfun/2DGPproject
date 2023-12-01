@@ -7,10 +7,10 @@ import random
 class Score:
 
     def __init__(self):
-        self.hero_x=200
+        self.hero_x=250
         self.hero_y=450
 
-        self.enemy_x = 700
+        self.enemy_x = 750
         self.enemy_y = 450
 
         self.hero_frame=0

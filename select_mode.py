@@ -30,11 +30,11 @@ def update():
 
 def draw():
     clear_canvas()
-    selector.draw(200*selector_count-50,350)
-    Hero1_image.draw(150,200)
-    Hero2_image.draw(350,200)
-    Hero3_image.draw(550,200)
-    Hero4_image.draw(750,200)
+    selector.draw(200*selector_count,350)
+    Hero1_image.draw(200,200)
+    Hero2_image.draw(400,200)
+    Hero3_image.draw(600,200)
+    Hero4_image.draw(800,200)
     update_canvas()
     pass
 
@@ -47,7 +47,7 @@ def handle_events():
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
             play_mode.create_hero(selector_count)
-            play_mode.create_background(0)
+            play_mode.create_background(2)
             game_framework.change_mode(play_mode)
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):
             if selector_count<4:
