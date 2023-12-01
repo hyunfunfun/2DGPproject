@@ -10,6 +10,10 @@ from hero3 import Hero3
 from hero4 import Hero4
 
 from enemy1 import Enemy1
+from enemy2 import Enemy2
+from enemy3 import Enemy3
+from enemy4 import Enemy4
+from boss import Boss
 
 from score import Score
 from timer import Timer
@@ -25,7 +29,6 @@ def init():
     global background
     global team
     global timer
-    global enemy
     global score
     global arrow
 
@@ -37,13 +40,9 @@ def init():
     timer = Timer()
     game_world.add_object(timer,2)
 
-    enemy=Enemy1()
-    game_world.add_object(enemy,1)
-
     hero.create_arrow()
 
-    game_world.add_collision_pairs('hero:enemy', None, enemy)
-    game_world.add_collision_pairs('enemy:hero',enemy,None)
+    create_enemy(hero.win_count)
 
 
 def handle_events():
@@ -76,6 +75,23 @@ def create_hero(n):
     game_world.add_object(hero, 1)
     game_world.add_collision_pairs('hero:enemy', hero, None)
     game_world.add_collision_pairs('enemy:hero', None, hero)
+
+def create_enemy(n):
+    global enemy
+    if n == 0:
+        enemy = Enemy1()
+    elif n == 1:
+        enemy = Enemy2()
+    elif n == 2:
+        enemy = Enemy3()
+    elif n == 3:
+        enemy = Enemy4()
+    elif n == 4:
+        enemy = Boss()
+
+    game_world.add_object(enemy, 1)
+    game_world.add_collision_pairs('hero:enemy', None, enemy)
+    game_world.add_collision_pairs('enemy:hero', enemy, None)
 
 def finish():
     game_world.clear()

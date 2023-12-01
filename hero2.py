@@ -323,7 +323,7 @@ class StateMachine:
 
 class Hero2:
     def __init__(self):
-
+        self.win_count = 0
         self.x, self.y = 200, 150
         self.frame = 0
         self.dir = 0
