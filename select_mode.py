@@ -47,6 +47,7 @@ def handle_events():
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
             play_mode.create_hero(selector_count)
+            play_mode.create_background(0)
             game_framework.change_mode(play_mode)
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):
             if selector_count<4:

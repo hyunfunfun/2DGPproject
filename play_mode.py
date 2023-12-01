@@ -31,11 +31,6 @@ def init():
 
     running = True
 
-    background=Background(4)
-    game_world.add_object(background, 0)
-
-    # create_hero()
-
     score=Score()
     game_world.add_object(score, 2)
 
@@ -63,6 +58,11 @@ def handle_events():
             hero.handle_event(event)
 
 
+def create_background(n):
+    global background
+    background = Background(n)
+    game_world.add_object(background, 0)
+
 def create_hero(n):
     global hero
     if n==1:
@@ -85,7 +85,7 @@ def finish():
 def update():
     game_world.update()
     game_world.handle_collisions()
-    if timer.ten_frame >= 1:
+    if timer.ten_frame >= 2:
         print('time_out')
         game_framework.push_mode(winlose_mode)
 
