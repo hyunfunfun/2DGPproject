@@ -83,7 +83,7 @@ class Idle:
 
     @staticmethod
     def draw(enemy):
-        enemy.idle_image.clip_composite_draw(int(enemy.frame) * 120, 0, 60, 80,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.idle_image.clip_composite_draw(int(enemy.frame) * 120, 0, 90, 80,0,'h', enemy.x, enemy.y,  enemy.size,  enemy.size)
 
 class Attack_ready:
     @staticmethod
@@ -113,12 +113,12 @@ class Attack_ready:
 
     @staticmethod
     def draw(enemy):
-        enemy.attack_ready_image.clip_composite_draw(int(enemy.frame) * 120, 0, 60, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.attack_ready_image.clip_composite_draw(int(enemy.frame) * 120, 0, 80, 110,0,'h', enemy.x, enemy.y,  enemy.size,  enemy.size)
 
 class Attack:
     @staticmethod
     def enter(enemy, e):
-        enemy.attack_range=80
+        enemy.attack_range=110
         enemy.wait_time = get_time()
         enemy.frame = 0
         enemy.dir=-1
@@ -141,7 +141,7 @@ class Attack:
 
     @staticmethod
     def draw(enemy):
-        enemy.attack_image.clip_composite_draw(int(enemy.frame) * 120, 0, 120, 120,0,'h', enemy.x, enemy.y, 150, 130)
+        enemy.attack_image.clip_composite_draw(int(enemy.frame) * 120, 0, 120, 120,0,'h', enemy.x, enemy.y,  enemy.size+30,  enemy.size+10)
 
 class Retreat:
 
@@ -171,7 +171,7 @@ class Retreat:
 
     @staticmethod
     def draw(enemy):
-        enemy.retreat_image.clip_composite_draw(int(enemy.frame) * 65, 0, 70, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.retreat_image.clip_composite_draw(int(enemy.frame) * 100, 0, 80, 90,0,'h', enemy.x, enemy.y,  enemy.size,  enemy.size)
 
 
 class Defense:
@@ -200,7 +200,7 @@ class Defense:
 
     @staticmethod
     def draw(enemy):
-        enemy.defense_image.clip_composite_draw(0, 0, 60, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.defense_image.clip_composite_draw(0, 0, 90, 80,0,'h', enemy.x, enemy.y,  enemy.size,  enemy.size)
 
 
 class Die:
@@ -216,7 +216,7 @@ class Die:
         game_world.add_collision_pairs('enemy:hero', enemy, None)
         game_world.add_collision_pairs('hero:enemy', None, enemy)
         enemy.x, enemy.y = 700, 150
-        play_mode.hero.x, play_mode.hero.y = 200, 150
+        play_mode.hero.x, play_mode.hero.y = 200, 180
         enemy.lose = False
 
     @staticmethod
@@ -229,7 +229,7 @@ class Die:
 
     @staticmethod
     def draw(enemy):
-        enemy.die_image.clip_composite_draw(int(enemy.frame) * 65, 0, 65, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.die_image.clip_composite_draw(int(enemy.frame) * 85, 0, 90, 90,0,'h', enemy.x, enemy.y,  enemy.size,  enemy.size)
 
 
 class StateMachine:
@@ -270,7 +270,8 @@ class StateMachine:
 class Boss:
 
     def __init__(self):
-        self.x, self.y = 700, 150
+        self.size=180
+        self.x, self.y = 700, 180
         self.frame = 0
         self.dir = 0
         self.attack_range=-100

@@ -83,7 +83,7 @@ class Idle:
 
     @staticmethod
     def draw(enemy):
-        enemy.idle_image.clip_composite_draw(int(enemy.frame) * 120, 0, 60, 80,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.idle_image.clip_composite_draw(int(enemy.frame) * 120, 0, 60, 80,0,'h', enemy.x, enemy.y, enemy.size, enemy.size)
 
 class Attack_ready:
     @staticmethod
@@ -113,7 +113,7 @@ class Attack_ready:
 
     @staticmethod
     def draw(enemy):
-        enemy.attack_ready_image.clip_composite_draw(int(enemy.frame) * 120, 0, 60, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.attack_ready_image.clip_composite_draw(int(enemy.frame) * 120, 0, 60, 90,0,'h', enemy.x, enemy.y, enemy.size, enemy.size)
 
 class Attack:
     @staticmethod
@@ -141,7 +141,7 @@ class Attack:
 
     @staticmethod
     def draw(enemy):
-        enemy.attack_image.clip_composite_draw(int(enemy.frame) * 120, 0, 120, 120,0,'h', enemy.x, enemy.y, 150, 130)
+        enemy.attack_image.clip_composite_draw(int(enemy.frame) * 120, 0, 120, 120,0,'h', enemy.x, enemy.y, enemy.size+50, enemy.size+30)
 
 class Retreat:
 
@@ -171,7 +171,7 @@ class Retreat:
 
     @staticmethod
     def draw(enemy):
-        enemy.retreat_image.clip_composite_draw(int(enemy.frame) * 65, 0, 70, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.retreat_image.clip_composite_draw(int(enemy.frame) * 65, 0, 70, 90,0,'h', enemy.x, enemy.y, enemy.size, enemy.size)
 
 
 class Defense:
@@ -200,7 +200,7 @@ class Defense:
 
     @staticmethod
     def draw(enemy):
-        enemy.defense_image.clip_composite_draw(0, 0, 60, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.defense_image.clip_composite_draw(0, 0, 60, 90,0,'h', enemy.x, enemy.y, enemy.size, enemy.size)
 
 
 class Die:
@@ -229,7 +229,7 @@ class Die:
 
     @staticmethod
     def draw(enemy):
-        enemy.die_image.clip_composite_draw(int(enemy.frame) * 65, 0, 65, 90,0,'h', enemy.x, enemy.y, 100, 100)
+        enemy.die_image.clip_composite_draw(int(enemy.frame) * 65, 0, 65, 90,0,'h', enemy.x, enemy.y, enemy.size, enemy.size)
 
 
 class StateMachine:
@@ -270,6 +270,7 @@ class StateMachine:
 class Enemy1:
 
     def __init__(self):
+        self.size=100
         self.x, self.y = 700, 150
         self.frame = 0
         self.dir = 0
