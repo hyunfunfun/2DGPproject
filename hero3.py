@@ -365,8 +365,6 @@ class Hero3:
 
     def draw(self):
         self.state_machine.draw()
-        draw_rectangle(*self.attack_bb())  # 튜플을 풀어서 인자로 전달
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어서 인자로 전달
 
     def attack_bb(self):
         return self.x-40,self.y-20,self.x+self.attack_range,self.y+0

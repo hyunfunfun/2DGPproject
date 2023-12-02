@@ -102,7 +102,7 @@ def finish():
 def update():
     game_world.update()
     game_world.handle_collisions()
-    if timer.ten_frame >= 2:
+    if timer.ten_frame >= 6:
         print('time_out')
         game_framework.push_mode(winlose_mode)
     if hero.win_count > 4:
