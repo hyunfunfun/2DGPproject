@@ -215,7 +215,7 @@ class Die:
     def exit(enemy, e):
         game_world.add_collision_pairs('enemy:hero', enemy, None)
         game_world.add_collision_pairs('hero:enemy', None, enemy)
-        enemy.x, enemy.y = 800, 150
+        enemy.x, enemy.y = 800, 180
         play_mode.hero.x, play_mode.hero.y = 200, 180
         enemy.lose = False
 

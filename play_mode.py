@@ -2,6 +2,7 @@ from pico2d import *
 import random
 import title_mode
 import winlose_mode
+import victory_mode
 import game_framework
 import game_world
 from hero1 import Hero1
@@ -101,9 +102,11 @@ def finish():
 def update():
     game_world.update()
     game_world.handle_collisions()
-    if timer.ten_frame >= 1:
+    if timer.ten_frame >= 2:
         print('time_out')
         game_framework.push_mode(winlose_mode)
+    if hero.win_count > 4:
+        game_framework.change_mode(victory_mode)
 
 
 def draw():

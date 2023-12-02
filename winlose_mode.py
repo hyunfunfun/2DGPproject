@@ -2,6 +2,7 @@ from pico2d import load_image, clear_canvas, update_canvas, get_events, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE, SDL_QUIT
 
 import play_mode
+import victory_mode
 from win import Win
 from lose import Lose
 import game_world
@@ -28,11 +29,9 @@ def init():
 def finish():
     global stage
     if check==True:
+        play_mode.hero.win_count+=1;
         game_world.remove_object(win)
         game_world.remove_object(play_mode.background)
-        play_mode.hero.win_count+=1;
-        if play_mode.hero.win_count>4:
-            pass#승리화면이동
         play_mode.create_background(play_mode.hero.win_count)
     else :
         game_world.remove_object(lose)
@@ -58,3 +57,9 @@ def draw():
 def handle_events():
     if get_time() - wait_time > 2:
         game_framework.change_mode(play_mode)
+    events = get_events()
+    for event in events:
+        if event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            game_framework.quit()
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
+            game_framework.change_mode(play_mode)
