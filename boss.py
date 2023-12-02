@@ -77,7 +77,7 @@ class Idle:
                 enemy.state_machine.handle_event(('Retreat', 0))
             else :
                 enemy.next_behavior=random.randint(0,4)
-        if get_time() - enemy.wait_time > 3:
+        if get_time() - enemy.wait_time > 2:
             enemy.state_machine.handle_event(('TIME_OUT', 0))
         enemy.frame = (enemy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
 

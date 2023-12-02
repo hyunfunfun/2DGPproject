@@ -5,6 +5,7 @@ from pico2d import get_time, load_image, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDL
     draw_rectangle, SDLK_LSHIFT
 from sdl2 import SDLK_UP, SDLK_DOWN
 from arrow import Arrow
+from boss import Boss
 import game_world
 import game_framework
 import play_mode
@@ -215,6 +216,8 @@ class Defense:
     @staticmethod
     def do(hero):
         if hero.defense_per>0:
+            if play_mode.enemy==Boss:
+                print('eeee')
             if (play_mode.enemy.x - hero.x)<130:
                 play_mode.enemy.x = hero.x+130
         if hero.lose:
@@ -323,7 +326,7 @@ class StateMachine:
 
 class Hero1:
     def __init__(self):
-        self.win_count=0
+        self.win_count=4
         self.x, self.y = 200, 150
         self.frame = 0
         self.dir = 0
